@@ -103,7 +103,7 @@ def start_challenge():
         conn.rollback()
 
         return jsonify({
-            "error": str(e)
+            "error": " Server Error"
         }), 500
 
     finally:
@@ -156,7 +156,7 @@ def submit_result():
             "error": "invalid wrongPlacements"
         }), 400
 
-    if solve_time <= 0 or solve_time > 300:
+    if solve_time <= 0 or solve_time > 30:
 
         return jsonify({
             "error": "invalid solve_time range"
@@ -207,7 +207,7 @@ def submit_result():
         if is_used:
 
             return jsonify({
-                "error": "replay detected"
+                "error": "server error"
             }), 403
 
         # ==============================
@@ -281,10 +281,8 @@ def submit_result():
         # ==============================
         #  BEHAVIOR METRICS
         # ==============================
-        reaction_time = solve_time / max(
-            wrong_placements,
-            1
-        )
+        reaction_time = solve_time / (wrong_placements + 1)
+        
 
         movement_smoothness = 0.85
 
@@ -331,7 +329,7 @@ def submit_result():
         conn.rollback()
 
         return jsonify({
-            "error": str(e)
+            "error": "server error"
         }), 500
 
     finally:
@@ -348,5 +346,5 @@ if __name__ == "__main__":
     app.run(
         host="0.0.0.0",
         port=5000,
-        debug=True
+        debug=False
     )
